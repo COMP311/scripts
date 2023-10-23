@@ -9,10 +9,10 @@ Bash script (i.e., macOS/Linux, not Windows) that downloads [Digital](https://gi
 Run with
 
 ```bash
-TODO
+curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash
 ```
 
-Then,
+After restarting the terminal,
 
 * Run `digital` to launch `Digital.jar`
 * Run `mars` to launch `Mars4_5.jar`

@@ -12,8 +12,8 @@ rm $INSTALL_DIR/Digital.zip
 MARS=http://courses.missouristate.edu/kenvollmar/mars/MARS_4_5_Aug2014/Mars4_5.jar
 wget -P $INSTALL_DIR http://courses.missouristate.edu/kenvollmar/mars/MARS_4_5_Aug2014/Mars4_5.jar
 
-# A pretend Python dictionary with Bash 3 (pre-installed on macOS, and Bash 4 has native dictionaries)
-# keys are names of software, values are local JAR files
+# Pretend dictionary in bash 3
+# If changing this, update README.md with new command(s)
 JARS=(
     "digital:$INSTALL_DIR/Digital.jar"
     "mars:$INSTALL_DIR/Mars4_5.jar"
@@ -27,11 +27,10 @@ then
     if [[ "$install_java_lower" = "y" ]]; then
         echo "Continuing installation"
         JAVA_VER="17.0.9-oracle"
-        # Install Java (version $JAVA_VER) and set as default
+        # For installing Java (version $JAVA_VER) and setting as default
         curl -s "https://get.sdkman.io" | bash
         source $HOME/.sdkman/bin/sdkman-init.sh
-        # sdkman asks whether to set the installed java version
-        # as default. Answer yes
+        # Answer yes to setting installed java version as default
         yes | sdk install java $JAVA_VER
         # Make sure it's default
         sdk default java $JAVA_VER
@@ -52,6 +51,7 @@ if [[ $SHELL = *"bash"* ]]; then
 	SHELL_RC_FILE=$HOME/.bashrc
 elif [[ $SHELL = *"zsh"* ]]; then
 	SHELL_RC_FILE=$HOME/.zshrc
+# Extreme edge case
 else
     printf "JAR files have been downloaded to $INSTALL_DIR.
     
@@ -72,7 +72,7 @@ done
 
 # Kinda want to alias this in user shell too...
 # But would have to duplicate JARS variable there, so not doing that.
-# Put the commands in the lab writeup instead.
+# Commands are listed in README (remember to update it)
 help-comp311 () {
     for kv in "${JARS[@]}" ; do
         COMMAND=${kv%%:*}
