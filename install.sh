@@ -1,5 +1,43 @@
 #!/usr/bin/env bash
 
+if ! command -v java &> /dev/null; then
+    JAVA_VER="17.0.9-oracle"
+    echo "You do not have Java installed. Would you like to automatically install java $JAVA_VER now and proceed with installation? [y/n]"
+    read install_java
+    install_java_lower=$(echo "$install_java" | tr '[:upper:]' '[:lower:]')
+    if [[ "$install_java_lower" = "y" ]]; then
+        echo "Continuing installation"
+        # For installing Java (version $JAVA_VER) and setting as default
+        curl -s "https://get.sdkman.io" | bash
+        source $HOME/.sdkman/bin/sdkman-init.sh
+        # Answer yes to setting installed java version as default
+        yes | sdk install java $JAVA_VER
+        # Make sure it's default
+        sdk default java $JAVA_VER
+        if ! sdk current java | grep -q "$JAVA_VER"; then
+            printf "This script was unable to set your Java version to $JAVA_VER using SDKMAN! Please install java yourself and re-run this script.
+Halting.\n"
+        fi
+    else
+        echo "Halting installation. Please install java yourself and re-run this script."
+        exit 1
+    fi
+fi
+
+# Not fully tested
+if (! command -v pip &> /dev/null) && (! command -v pip3 &> /dev/null); then
+    printf "You do not have pip installed (i.e., pip and pip3 commands don't work).
+Please install Python 3.9+ (3.9+ is required for COMP 311 SAPsim and will come with pip) and re-run this script.\n"
+    echo "Exiting."
+    exit 1
+elif command -v pip &> /dev/null; then
+    python -m pip install --upgrade pip
+    pip install SAPsim
+else
+    python3 -m pip install --upgrade pip
+    pip3 install SAPsim
+fi
+
 INSTALL_DIR=$HOME/.comp311
 
 DIGITAL=https://github.com/hneemann/Digital/releases/download/v0.30/Digital.zip
@@ -18,31 +56,6 @@ JARS=(
     "digital:$INSTALL_DIR/Digital.jar"
     "mars:$INSTALL_DIR/Mars4_5.jar"
 )
-
-if ! command -v java &> /dev/null
-then
-    echo "You do not have Java installed. Would you like to install java $JAVA_VER now and proceed with installation? [y/n]"
-    read install_java
-    install_java_lower=$(echo "$install_java" | tr '[:upper:]' '[:lower:]')
-    if [[ "$install_java_lower" = "y" ]]; then
-        echo "Continuing installation"
-        JAVA_VER="17.0.9-oracle"
-        # For installing Java (version $JAVA_VER) and setting as default
-        curl -s "https://get.sdkman.io" | bash
-        source $HOME/.sdkman/bin/sdkman-init.sh
-        # Answer yes to setting installed java version as default
-        yes | sdk install java $JAVA_VER
-        # Make sure it's default
-        sdk default java $JAVA_VER
-        if ! sdk current java | grep -q "$JAVA_VER"; then
-            printf "This script was unable to set your Java version to $JAVA_VER using SDKMAN! Please install java yourself and re-run this script.
-Halting.\n"
-        fi
-    else
-        echo "Halting installation. Please install java yourself and re-run this script."
-        exit 1
-    fi
-fi
 
 # Determine name of shell rc file
 # This script is always run via bash
@@ -80,6 +93,7 @@ help-comp311 () {
         printf "\tRun \`$COMMAND\` to launch $JAR\n"
     done
     printf "\tFor Digital, run \`digital file.dig\` to directly open file.dig on launch. However, this does not work for MARS.\n"
+    printf "\tSAPsim was installed via pip. See https://github.com/jesse-wei/sapsim#usage for usage details.\n"
 }
 
 printf "JAR files have been downloaded to $INSTALL_DIR, and aliases for launching the JAR files have been created.\n\n"
