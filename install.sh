@@ -39,22 +39,29 @@ else
 fi
 
 INSTALL_DIR=$HOME/.comp311
+mkdir -p $INSTALL_DIR
 
 DIGITAL=https://github.com/hneemann/Digital/releases/download/v0.30/Digital.zip
-wget -P $INSTALL_DIR https://github.com/hneemann/Digital/releases/download/v0.30/Digital.zip
-unzip $INSTALL_DIR/Digital.zip -d $INSTALL_DIR
-mv $INSTALL_DIR/Digital/Digital.jar $INSTALL_DIR
-rm -r $INSTALL_DIR/Digital
-rm $INSTALL_DIR/Digital.zip
+DIGITAL_ZIP="${DIGITAL##*/}"
+# wget not pre-installed on macOS
+# curl --output-dir is on a high version of cURL that may not be installed on user system
+curl -OJL $DIGITAL
+unzip $DIGITAL_ZIP
+rm $DIGITAL_ZIP
+mv Digital/Digital.jar $INSTALL_DIR
+rm -r Digital
 
 MARS=http://courses.missouristate.edu/kenvollmar/mars/MARS_4_5_Aug2014/Mars4_5.jar
-wget -P $INSTALL_DIR http://courses.missouristate.edu/kenvollmar/mars/MARS_4_5_Aug2014/Mars4_5.jar
+MARS_JAR="${MARS##*/}"
+# -J makes this slow
+curl -OL $MARS
+mv $MARS_JAR $INSTALL_DIR
 
 # Pretend dictionary in bash 3
 # If changing this, update README.md with new command(s)
 JARS=(
     "digital:$INSTALL_DIR/Digital.jar"
-    "mars:$INSTALL_DIR/Mars4_5.jar"
+    "mars:$INSTALL_DIR/$MARS_JAR"
 )
 
 # Determine name of shell rc file
