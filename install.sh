@@ -27,7 +27,7 @@ fi
 # Not fully tested
 if (! command -v pip &> /dev/null) && (! command -v pip3 &> /dev/null); then
     printf "You do not have pip installed (i.e., pip and pip3 commands don't work).
-Please install Python 3.9+ (3.9+ is required for COMP 311 SAPsim and will come with pip) and re-run this script.\n"
+Please install Python 3.9+ (which will come with pip, and 3.9+ is required for COMP 311's SAPsim tool) and re-run this script.\n"
     echo "Exiting."
     exit 1
 elif command -v pip &> /dev/null; then
