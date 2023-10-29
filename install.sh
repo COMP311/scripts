@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# Usage: ./install.sh
+# or
+# curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash
+# author: Jesse Wei <jesse@cs.unc.edu>
 
 if ! command -v java &> /dev/null; then
     JAVA_VER="17.0.9-oracle"
