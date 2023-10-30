@@ -2,7 +2,7 @@
 # Usage: ./install.sh
 # or
 # curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash
-# author: Jesse Wei <jesse@cs.unc.edu>
+# Author: Jesse Wei <jesse@cs.unc.edu>
 
 if ! command -v java &> /dev/null; then
     JAVA_VER="17.0.9-oracle"
@@ -77,7 +77,7 @@ elif [[ $SHELL = *"zsh"* ]]; then
 	SHELL_RC_FILE=$HOME/.zshrc
 # Extreme edge case
 else
-    printf "JAR files have been downloaded to $INSTALL_DIR.
+    printf "\nJAR files have been downloaded to $INSTALL_DIR.
     
 However, this script cannot create aliases for the JAR files because your \$SHELL is not bash or zsh,
 so I don't know what your shell's equivalent to .bashrc or .zshrc is.
@@ -104,9 +104,9 @@ help-comp311 () {
         printf "\tRun \`$COMMAND\` to launch $JAR\n"
     done
     printf "\tFor Digital, run \`digital file.dig\` to directly open file.dig on launch. However, this does not work for MARS.\n"
-    printf "\tSAPsim was installed via pip. See https://github.com/jesse-wei/sapsim#usage for usage details.\n"
+    printf "\tSAPsim was installed via pip.\n"
 }
 
-printf "JAR files have been downloaded to $INSTALL_DIR, and aliases for launching the JAR files have been created.\n\n"
+printf "\nJAR files have been downloaded to $INSTALL_DIR, and aliases for launching the JAR files have been created.\n\n"
 echo "Run \`source $SHELL_RC_FILE\` to apply changes to your current shell session; otherwise, restart your terminal. Then,"
 help-comp311

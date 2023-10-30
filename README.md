@@ -10,12 +10,7 @@ Bash script that downloads all software required for COMP 311 ([Digital](https:/
 curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash
 ```
 
-After restarting the terminal,
-
-* Run `digital` to launch `Digital.jar`
-    * Run `digital <file.dig>` to directly open `file.dig` on launch. However, this does not work for MARS.
-* Run `mars` to launch `Mars4_5.jar`
-* SAPsim was installed via pip. See [SAPsim's README](https://github.com/jesse-wei/SAPsim) for usage details.
+Follow the instructions in the printed output about how to run the JAR files via an alias. Doing so will block your terminal. If you don't want to open additional sessions while running a JAR file from the terminal, use [tmux](https://www.hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/).
 
 ### Credits
 
