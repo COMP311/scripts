@@ -100,6 +100,16 @@ Otherwise, the .jar has already been downloaded and can be run however you norma
     exit 1
 fi
 
+SHELL_RC_FILE_OWNER=$(ls -l $SHELL_RC_FILE | awk '{print $3}')
+
+if [[ "$SHELL_RC_FILE_OWNER" != "$USER" ]]; then
+    echo "ERROR: Owner of $SHELL_RC_FILE is not you ($USER)."
+    # Group is left out, so the group becomes the default group for $USER
+    echo "Run \`sudo chown $USER: $SHELL_RC_FILE\` to change ownership, then re-run this script."
+    echo "Exiting."
+    exit 1
+fi
+
 # Alias the commands
 for kv in "${JARS[@]}" ; do
     COMMAND=${kv%%:*}
