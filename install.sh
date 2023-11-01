@@ -2,7 +2,7 @@
 # Install COMP 311 software Digital, SAPsim, MARS
 # Usage: ./install.sh [no_sapsim]
 # or
-# curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash -s [no_sapsim]
+# curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash[ -s no_sapsim]
 # Author: Jesse Wei <jesse@cs.unc.edu>
 
 # TODO: Convert to actual flag (e.g., https://mywiki.wooledge.org/BashFAQ/035), not $1
@@ -63,7 +63,7 @@ DIGITAL_ZIP="${DIGITAL##*/}"
 # Unfortunately, this means we can't curl to $INSTALL_DIR
 # Must curl to cwd then mv to $INSTALL_DIR
 curl -OJL $DIGITAL
-unzip $DIGITAL_ZIP
+unzip $DIGITAL_ZIP > /dev/null
 rm $DIGITAL_ZIP
 mv Digital/Digital.jar $INSTALL_DIR
 rm -r Digital
