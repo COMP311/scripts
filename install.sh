@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
-# Usage: ./install.sh
+# Install COMP 311 software Digital, SAPsim, MARS
+# Usage: ./install.sh [no_sapsim]
 # or
-# curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash
+# curl -s "https://raw.githubusercontent.com/COMP311/scripts/main/install.sh" | bash -s [no_sapsim]
 # Author: Jesse Wei <jesse@cs.unc.edu>
+
+# TODO: Convert to actual flag (e.g., https://mywiki.wooledge.org/BashFAQ/035), not $1
+# getopts is fine but doesn't allow non-single-char flag, prefer the above
+# I didn't have time to implement and test - Jesse
+FLAG_SAPSIM=$1
 
 if ! command -v java &> /dev/null; then
     JAVA_VER="17.0.9-oracle"
@@ -28,18 +34,23 @@ Halting.\n"
     fi
 fi
 
-# Not fully tested
-if (! command -v pip &> /dev/null) && (! command -v pip3 &> /dev/null); then
-    printf "You do not have pip installed (i.e., pip and pip3 commands don't work).
-Please install Python 3.9+ (which will come with pip, and 3.9+ is required for COMP 311's SAPsim tool) and re-run this script.\n"
-    echo "Exiting."
-    exit 1
-elif command -v pip &> /dev/null; then
-    python -m pip install --upgrade pip
-    pip install SAPsim
-else
-    python3 -m pip install --upgrade pip
-    pip3 install SAPsim
+# Warning: This section was not fully tested across multiple platforms
+# Python environment sucks
+# TODO: Use flag (e.g., https://mywiki.wooledge.org/BashFAQ/035) instead of $1
+# getopts is fine but doesn't allow non-single-char flag, prefer the above
+# I didn't have time to implement and test - Jesse
+if [[ "$FLAG_SAPSIM" != "no_sapsim" ]]; then
+    if (! command -v python &> /dev/null) && (! command -v python3 &> /dev/null); then
+        echo "You do not have Python 3.9+ installed (i.e., python and python3 commands both not found). Please install Python 3.9+ (required for SAPsim tool) and re-run this script."
+        echo "Exiting."
+        exit 1
+    elif command -v python &> /dev/null; then
+        python -m pip install --upgrade pip
+        python -m pip install SAPsim
+    else
+        python3 -m pip install --upgrade pip
+        python3 -m pip install SAPsim
+    fi
 fi
 
 INSTALL_DIR=$HOME/.comp311
@@ -49,6 +60,8 @@ DIGITAL=https://github.com/hneemann/Digital/releases/download/v0.30/Digital.zip
 DIGITAL_ZIP="${DIGITAL##*/}"
 # wget not pre-installed on macOS
 # curl --output-dir is on a high version of cURL that may not be installed on user system
+# Unfortunately, this means we can't curl to $INSTALL_DIR
+# Must curl to cwd then mv to $INSTALL_DIR
 curl -OJL $DIGITAL
 unzip $DIGITAL_ZIP
 rm $DIGITAL_ZIP
@@ -94,19 +107,23 @@ for kv in "${JARS[@]}" ; do
     echo "alias $COMMAND=\"java -jar $JAR\"" >> "$SHELL_RC_FILE"
 done
 
-# Kinda want to alias this in user shell too...
-# But would have to duplicate JARS variable there, so not doing that.
-# Commands are listed in README (remember to update it)
-help-comp311 () {
-    for kv in "${JARS[@]}" ; do
-        COMMAND=${kv%%:*}
-        JAR=${kv#*:}
-        printf "\tRun \`$COMMAND\` to launch $JAR\n"
-    done
-    printf "\tFor Digital, run \`digital file.dig\` to directly open file.dig on launch. However, this does not work for MARS.\n"
-    printf "\tSAPsim was installed via pip.\n"
-}
-
 printf "\nJAR files have been downloaded to $INSTALL_DIR, and aliases for launching the JAR files have been created.\n\n"
-echo "Run \`source $SHELL_RC_FILE\` to apply changes to your current shell session; otherwise, restart your terminal. Then,"
-help-comp311
+printf "**Run \`source $SHELL_RC_FILE\` to apply changes to your current shell session; otherwise, restart your terminal.** Then,\n\n"
+
+USAGE_FILE=$INSTALL_DIR/usage.txt
+USAGE=""
+
+for kv in "${JARS[@]}" ; do
+    COMMAND=${kv%%:*}
+    JAR=${kv#*:}
+    USAGE+="Run \`$COMMAND\` to launch $JAR\n"
+done
+USAGE+="For Digital, run \`digital file.dig\` to directly open file.dig on launch. However, this does not work for MARS.\n"
+if [[ "$FLAG_SAPSIM" != "no_sapsim" ]]; then
+    USAGE+="SAPsim was installed via pip.\n"
+fi
+
+printf "$USAGE" | tee $USAGE_FILE
+
+echo "alias help-comp311=\"cat $USAGE_FILE\"" >> "$SHELL_RC_FILE"
+echo "To view this message again, run \`help-comp311\`."
