@@ -100,6 +100,10 @@ I assume that since you're not using bash nor zsh, you know how to do this.
     exit 1
 fi
 
+if [[ ! -f "$SHELL_RC_FILE" ]]; then
+    touch "$SHELL_RC_FILE"
+fi
+
 SHELL_RC_FILE_OWNER=$(ls -l $SHELL_RC_FILE | awk '{print $3}')
 
 if [[ "$SHELL_RC_FILE_OWNER" != "$USER" ]]; then
